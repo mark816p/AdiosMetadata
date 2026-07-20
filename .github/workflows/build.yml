@@ -30,6 +30,8 @@ jobs:
 
       - name: Build Next.js (Static Export)
         run: npm run build
+        env:
+          BASE_PATH: /AdiosMetadata
         
       - name: Add .nojekyll file
         run: touch ./out/.nojekyll
