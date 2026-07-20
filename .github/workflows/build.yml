@@ -32,6 +32,7 @@ jobs:
         run: npm run build
         env:
           BASE_PATH: /AdiosMetadata
+          NEXT_PUBLIC_BASE_PATH: /AdiosMetadata
         
       - name: Add .nojekyll file
         run: touch ./out/.nojekyll

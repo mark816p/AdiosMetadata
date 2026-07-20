@@ -1,6 +1,6 @@
 import { PDFDocument, PDFName } from "pdf-lib";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile } from "@ffmpeg/util";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import piexif from "piexifjs";
 
 let ffmpegInstance: FFmpeg | null = null;
@@ -8,7 +8,10 @@ let ffmpegInstance: FFmpeg | null = null;
 async function getFFmpeg(): Promise<FFmpeg> {
   if (!ffmpegInstance) {
     ffmpegInstance = new FFmpeg();
-    await ffmpegInstance.load();
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+    const coreURL = await toBlobURL(`${basePath}/ffmpeg/ffmpeg-core.js`, "text/javascript");
+    const wasmURL = await toBlobURL(`${basePath}/ffmpeg/ffmpeg-core.wasm`, "application/wasm");
+    await ffmpegInstance.load({ coreURL, wasmURL });
   }
   return ffmpegInstance;
 }

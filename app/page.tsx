@@ -98,14 +98,14 @@ export default function Home() {
 
   const handleMetadataRemoval = async () => {
     setProcessing(true);
-    setFileStatuses({});
-
-    await new Promise((res) => setTimeout(res, 1000));
-
-    const { stripImageMetadata, stripPdfMetadata, stripDocxMetadata, stripVideoMetadata, stripAudioMetadata, stripJpegMetadata } =
-      await import("@/utils/stripMetadata");
-
+    
     try {
+      setFileStatuses({});
+      await new Promise((res) => setTimeout(res, 1000));
+
+      const { stripImageMetadata, stripPdfMetadata, stripDocxMetadata, stripVideoMetadata, stripAudioMetadata, stripJpegMetadata } =
+        await import("@/utils/stripMetadata");
+
       const cleanedFiles: File[] = [];
       let failedCount = 0;
 
