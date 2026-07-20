@@ -30,8 +30,8 @@ export default function Dropzone({ fileStore, fileStatuses, onFilesAccepted, onF
   const isAcceptedSize = (file: File) => file.size <= MAX_FILE_SIZE_BYTES;
 
   const hasValidExtension = (file: File) => {
-    const exts = ACCEPTED_FILE_TYPES[file.type] || [];
-    return exts.some((ext) => file.name.toLowerCase().endsWith(ext));
+    const allExts = Object.values(ACCEPTED_FILE_TYPES).flat();
+    return allExts.some((ext) => file.name.toLowerCase().endsWith(ext));
   };
 
   const handleFiles = useCallback(
@@ -41,7 +41,7 @@ export default function Dropzone({ fileStore, fileStatuses, onFilesAccepted, onF
         const newFiles: File[] = [];
 
         for (const file of fileArray) {
-          if (!isAcceptedType(file) || !hasValidExtension(file)) {
+          if (!hasValidExtension(file)) {
             onError("unsupported_format");
             return;
           }
@@ -120,7 +120,7 @@ export default function Dropzone({ fileStore, fileStatuses, onFilesAccepted, onF
           if (!processing) handleDrop(e);
         }}
       >
-        <input ref={fileInputRef} type="file" multiple accept={acceptedMimeTypes.join(",")} onChange={handleChange} className="hidden" />
+        <input ref={fileInputRef} type="file" multiple accept={[...acceptedMimeTypes, ...Object.values(ACCEPTED_FILE_TYPES).flat()].join(",")} onChange={handleChange} className="hidden" />
         <div className="flex flex-col items-center gap-4 text-center">
           <div className={`p-4 rounded-full transition-colors ${highlight ? "bg-accent/20 text-accent" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"}`}>
             <UploadCloud size={40} strokeWidth={1.5} />
