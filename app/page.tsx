@@ -5,11 +5,9 @@ import { useState, useEffect } from "react";
 import { MAX_FILE_COUNT, MAX_FILE_SIZE_MB } from "@/utils/constants";
 import { getFileExtensions } from "@/utils/utils";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, Sparkles } from "lucide-react";
 import JSZip from "jszip";
-import ClearAllButton from "@/components/ClearAllButton";
 import Hero from "@/components/Hero";
-import DisableInternet from "@/components/DisableInternet";
 
 type ErrorType = "file_count" | "unsupported_format" | "file_too_large" | "general" | "dropzone_error";
 
@@ -67,24 +65,6 @@ export default function Home() {
   const [fileStatuses, setFileStatuses] = useState<Record<number, FileStatus>>({});
   const [processing, setProcessing] = useState<boolean>(false);
 
-  useEffect(() => {
-    const infoTimeout = setTimeout(() => {
-      toast.info("You can disable your internet", {
-        id: "offline-mode",
-        duration: 10000,
-        description: "Runs in your browser only. Files never leave your device.",
-        action: {
-          label: "Got it",
-          onClick: () => {},
-        },
-      });
-    }, 2000);
-
-    return () => {
-      clearTimeout(infoTimeout);
-    };
-  }, []);
-
   const handleFilesAccepted = (newFiles: File[]) => {
     const totalCount = fileStore.length + newFiles.length;
     if (totalCount > MAX_FILE_COUNT) {
@@ -93,7 +73,7 @@ export default function Home() {
     }
 
     setFileStore((prevFiles) => [...prevFiles, ...newFiles].slice(0, MAX_FILE_COUNT));
-    toast.success(newFiles.length <= 1 ? "1 File queued" : `${newFiles.length} files queued`, {
+    toast.success(newFiles.length <= 1 ? "1 file added" : `${newFiles.length} files added`, {
       duration: 1700,
     });
   };
@@ -109,6 +89,11 @@ export default function Home() {
       });
       return next;
     });
+  };
+  
+  const handleClearAll = () => {
+    setFileStore([]);
+    setFileStatuses({});
   };
 
   const handleMetadataRemoval = async () => {
@@ -176,15 +161,15 @@ export default function Home() {
         const url = URL.createObjectURL(zipBlob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "AdiosMetadata_cleaned.zip";
+        a.download = "AdiosMetadata_Cleaned.zip";
         a.click();
         URL.revokeObjectURL(url);
       }
 
       if (failedCount === 0) {
-        toast.success("Download ready ✨");
+        toast.success("Download ready");
       } else if (cleanedFiles.length > 0) {
-        toast.warning(`Download ready - ${failedCount} file${failedCount > 1 ? "s" : ""} failed to process`);
+        toast.warning(`Download ready - ${failedCount} file${failedCount > 1 ? "s" : ""} failed`);
       } else {
         showErrorToast("general");
       }
@@ -201,9 +186,9 @@ export default function Home() {
   }, [processing]);
 
   return (
-    <div className="w-full flex flex-col gap-(--fluid-xl-3xl) h-full items-center py-(--fluid-md-2xl) bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 mt-8">
+    <div className="w-full flex flex-col h-full items-center fade-in">
       <Hero />
-      <div className="w-full flex flex-col gap-(--fluid-lg-xl)">
+      <div className="w-full max-w-3xl flex flex-col gap-8">
         <Dropzone
           processing={processing}
           fileStore={fileStore}
@@ -212,20 +197,33 @@ export default function Home() {
           onFileRemove={handleFileRemoved}
           onError={(type: ErrorType) => showErrorToast(type)}
         />
-        <div className="w-full flex justify-end gap-(--space-md)">
-          <ClearAllButton fileStore={fileStore} setFileStore={setFileStore} processing={processing} />
-          <Button
-            className="type-fluid type-button-lg p-(--fluid-md-xl) bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl border-0"
-            disabled={fileStore.length <= 0 || processing}
-            onClick={handleMetadataRemoval}
-          >
-            {processing && <Loader2 className="animate-spin mr-2" />}
-            Remove metadata
-          </Button>
-        </div>
+        
+        {fileStore.length > 0 && (
+          <div className="w-full flex justify-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-500">
+            <Button
+              variant="outline"
+              className="px-6 py-6 h-auto text-base font-medium rounded-2xl border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-zinc-600 dark:text-zinc-400"
+              disabled={processing}
+              onClick={handleClearAll}
+            >
+              <Trash2 className="mr-2 size-5" />
+              Clear files
+            </Button>
+            <Button
+              className="px-8 py-6 h-auto text-base font-medium rounded-2xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              disabled={processing}
+              onClick={handleMetadataRemoval}
+            >
+              {processing ? (
+                <Loader2 className="animate-spin mr-2 size-5" />
+              ) : (
+                <Sparkles className="mr-2 size-5" />
+              )}
+              Clean metadata
+            </Button>
+          </div>
+        )}
       </div>
-      <DisableInternet />
-      <div className="h-0.75 w-full bg-white/20 rounded-full" />
     </div>
   );
 }

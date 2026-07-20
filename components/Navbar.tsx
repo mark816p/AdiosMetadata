@@ -2,30 +2,24 @@
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
 import Typography from "./Typography";
-import { Sparkles } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <header className="relative z-50">
-      <nav className="h-40 flex flex-col sm:flex-row gap-(--space-lg) justify-center sm:justify-between items-start sm:items-center">
-        <div className="flex justify-between items-center w-full">
-          <Link href="/" prefetch={false} aria-label="Go to Adios Metadata homepage">
-            <span className="flex items-center gap-(--fluid-sm-lg) type-fluid type-h1 group">
-              <Sparkles className="size-10 text-pink-400 group-hover:text-purple-400 transition-colors" />
-              <Typography as="span" variant="h1" className="leading-none text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400 font-extrabold tracking-tight">
-                Adios Metadata
-              </Typography>
-            </span>
-          </Link>
-          <div className="flex gap-(--space-md) sm:hidden">
-            <ThemeToggle />
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="absolute gap-(--space-md) top-full mt-(--space-lg) right-0 hidden sm:flex">
-            <ThemeToggle />
-          </div>
+    <header className="relative z-50 pt-8 pb-4">
+      <nav className="flex justify-between items-center w-full">
+        <Link href="/" prefetch={false} aria-label="Go to Adios Metadata homepage" className="group">
+          <span className="flex items-center gap-3">
+            <div className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black p-2 rounded-xl group-hover:scale-105 transition-transform">
+              <ShieldCheck size={22} strokeWidth={2.5} />
+            </div>
+            <Typography as="span" variant="h2" className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+              Adios Metadata
+            </Typography>
+          </span>
+        </Link>
+        <div className="flex gap-4">
+          <ThemeToggle />
         </div>
       </nav>
     </header>

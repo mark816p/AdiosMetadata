@@ -31,11 +31,11 @@ const avenirNext = localFont({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f172a", // Darker theme color
+  themeColor: "#fafafa",
 };
 
 export const metadata: Metadata = {
-  title: "Adios Metadata - Privacy First",
+  title: "Adios Metadata",
   description: "Remove hidden metadata privately from images, videos, audio, PDFs, and documents. Free, offline, no uploads.",
   keywords: [
     "remove metadata",
@@ -68,14 +68,14 @@ export default function RootLayout({
       <head>
         <meta name="application-name" content="Adios Metadata" />
       </head>
-      <body suppressHydrationWarning className={`antialiased min-h-screen flex flex-col ${avenirNext.variable} font-avenir bg-linear-to-br from-indigo-900 to-purple-900 text-white`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <body suppressHydrationWarning className={`antialiased min-h-screen flex flex-col ${avenirNext.variable} font-avenir bg-zinc-50 dark:bg-[#0e0e10] text-zinc-900 dark:text-zinc-100 selection:bg-zinc-200 dark:selection:bg-zinc-800`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TooltipProvider>
-            <div className="flex flex-col flex-1 items-center">
-              <div className="max-w-(--max-content-width) flex flex-col flex-1 w-full h-full px-(--space-xl)">
+            <div className="flex flex-col flex-1 items-center selection:bg-accent/20">
+              <div className="max-w-4xl flex flex-col flex-1 w-full h-full px-6 md:px-8">
                 <Navbar />
-                <main className="flex-1 glassmorphism-container">{children}</main>
-                <Toaster richColors />
+                <main className="flex-1 flex flex-col py-12 md:py-24">{children}</main>
+                <Toaster richColors position="top-center" />
               </div>
             </div>
           </TooltipProvider>
