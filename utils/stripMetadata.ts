@@ -166,7 +166,7 @@ export async function stripPdfMetadata(file: File): Promise<File | null> {
       delete pdfDoc.context.trailerInfo.Info;
     }
 
-    const newPdfBytes = await pdfDoc.save({ useObjectStreams: false });
+    const newPdfBytes = await pdfDoc.save();
 
     return new File([newPdfBytes as BlobPart], file.name, { type: "application/pdf" });
   } catch (err) {
